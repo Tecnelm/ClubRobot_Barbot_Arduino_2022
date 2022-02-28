@@ -27,3 +27,11 @@ tank_t tank = {
   .pump = PIN_TANK_PUMP;
   .sensor = PIN_TANK_SENSOR;
 };
+
+void test_tank(){
+  PRINT("TANK SETUP TEST");
+  tank.init(&tank);
+  PRINT("TANK REFILL TEST");
+  tank.refill_tank(&tank);
+  PRINT("TANK END TEST");
+}
