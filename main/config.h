@@ -27,4 +27,9 @@
 #define BUFFERSIZE 256
 #define TIMEOUT_SERIAL 100
 #define END_COMMAND_CHAR '}'
+
+///CUVE
+#define PIN_TANK_SENSOR A0
+#define PIN_TANK_PUMP 7
+#define THRESHOLD_TANK_FULL 100
 #endif
