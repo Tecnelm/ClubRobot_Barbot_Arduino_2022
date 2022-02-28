@@ -5,27 +5,27 @@
 
 void tank_init(struct tank* tank)
 {
-  pinMode(tank->pump,OUTPUT)
+  pinMode(tank->pump,OUTPUT);
 }
 
 void refill_tank(struct tank* tank)
 {
-  if (AnalogRead(tank->sensor) > THRESHOLD_TANK_FULL)
+  if (analogRead(tank->sensor) > THRESHOLD_TANK_FULL)
   {
-    PRINT("START REFILL MAIN TANK")
+    PRINT("START REFILL MAIN TANK");
     pinMode(tank->pump,OPEN);
-    while(AnalogRead(tank->sensor) > THRESHOLD_TANK_FULL);
+    while(analogRead(tank->sensor) > THRESHOLD_TANK_FULL);
     pinMode(tank-> pump,CLOSE);
-    PRINT("END REFILLING MAIN TANK")
+    PRINT("END REFILLING MAIN TANK");
   }
   
 }
 
 tank_t tank = {
-  .init = tank_init;
-  .refill_tank = refill_tank;
-  .pump = PIN_TANK_PUMP;
-  .sensor = PIN_TANK_SENSOR;
+  .init = tank_init,
+  .refill_tank = refill_tank,
+  .pump = PIN_TANK_PUMP,
+  .sensor = PIN_TANK_SENSOR
 };
 
 void test_tank(){
