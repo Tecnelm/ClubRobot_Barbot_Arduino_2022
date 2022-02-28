@@ -46,29 +46,31 @@ electrovalve_array_t electrovalves ={
 
 void test_electrovalves()
 {
-  #define DEBUG
-  Serial.begin(9600);
+  PRINT("ELECTROVALVE SETUP TEST");
   electrovalves.init(&electrovalves);
-  while(1)
+  PRINT("ELECTROVALVE ACTIVATION TEST");
+  for(int a = 0 ; a<3 ; a++)
   {
-
+    PRINT("ELECTROVALVE OPEN TEST");
     for( int i = 5 ; i >=0 ; i-- )
     {
       electrovalves.open(&electrovalves.array[i]);
       delay(500);
     }
+    PRINT("ELECTROVALVE CLOSE TEST");
     for( int i = 0 ; i <=6 ; i++ )
     {
       electrovalves.close(&electrovalves.array[i]);
       delay(500);
     }
-
+    PRINT("ELECTROVALVE OPEN-TIME TEST");
     for( int i = 0 ; i <=6 ; i++ )
     {
       electrovalves.openTime(&electrovalves.array[i],500);
       
     }
   }
+  PRINT("ELECTROVALVE END TEST");
 
 }
 
