@@ -24,7 +24,7 @@
 
 ///COMMUNICATION
 #define BAUDRATES 9600
-#define BUFFERSIZE 256
+#define BUFFERSIZE 255
 #define TIMEOUT_SERIAL 100
 #define END_COMMAND_CHAR '}'
 #endif

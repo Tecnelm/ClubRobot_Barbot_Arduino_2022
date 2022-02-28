@@ -15,32 +15,29 @@ void init_serial()
 
 void check_serial_message(communication_t *communication)
 {
-  uint8_t character;
-  for (uint8_t index = 0 ; Serial.available() && index <BUFFERSIZE-1 ; index++)
+  char c;
+  String commande;
+  if (Serial.available())
   {
-    character = Serial.read();
-    PRINT("COM : RECEIVE = "+character);
-    communication->buffer[index] = character;
-    if (character == END_COMMAND_CHAR)
-    {
-      communication->buffer[index+1] = '\0';
-      parse_message(communication->buffer, index+1);
-    }
+    commande = Serial.readStringUntil('}') + "}";
+    Serial.flush();
+    commande.toCharArray(communication->buffer, BUFFERSIZE);
+    parse_message(communication->buffer,commande.length());
   }
 }
 
-void parse_message(uint8_t *buffer, uint8_t size){
-  PRINT("COM : MESSAGE = "+(char*)buffer);
-  uint8_t test[10];
-  uint8_t value;
-  if(sscanf((char*)buffer,"{COMMAND:%s;value:%d}",test,&value) == 2)
+void parse_message(char *buffer, uint8_t size){
+  Serial.print(create_commande(COMMANDE_DEBUG_STR,buffer));
+  int commande;
+  int value;
+  if(sscanf((char*)buffer,"{commande:%d;value:%d}",&commande,&value) == 2)
   {
-    PRINT("COMMANDE : "+(char*)test);
-    PRINT("VALUE= "+value);
+      switch(commande)
+      {
+        case COMMANDE_SEND_POSITION:
+        break;
+      }
   }
   else
-  PRINT("ERROR DECODE COMMANDE");
-
-
-
+    Serial.println(create_commande(COMMANDE_RESPONSE,STATUS_ERROR));
 }
