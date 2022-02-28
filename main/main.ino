@@ -7,7 +7,6 @@ extern game_t game;
 void setup() {
   // game.init();
   test_electrovalves();
-  analogRead(A0);
 }
 
 void loop() {
