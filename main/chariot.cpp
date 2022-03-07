@@ -14,28 +14,19 @@ void init_chariot(chariot_t *chariot){
     pinMode(chariot->sensor_position_array[i],INPUT_PULLUP);
   }
 
-  
-  // chariot->left(chariot);
-  // chariot->move(chariot);
-  // chariot->left(chariot);
-  // chariot->move(chariot);
-  // chariot->left(chariot);
-  // chariot->move(chariot);
-  // delay(1000);
-  // chariot->move_position(0);
 }
 
 void charriot_right(chariot_t *chariot){
   chariot->speed += MOTOR_SLICE_VALUE;
   chariot->speed = chariot->speed >255 ? 255:chariot->speed;
   PRINT("Charriot : move RIGHT value = "+chariot->speed);
-  delay(SLICE_DELAY_MS);
+  // delay(SLICE_DELAY_MS);
 }
 
 void charriot_left(chariot_t *chariot){
   chariot->speed -= MOTOR_SLICE_VALUE;
   chariot->speed = chariot->speed < -255 ? -255:chariot->speed;
-  delay(SLICE_DELAY_MS);
+  // delay(SLICE_DELAY_MS);
 }
 
 void choose_way(chariot_t *chariot){
@@ -102,7 +93,7 @@ void move_position(chariot_t *chariot,char position){
   while (chariot->position != position)
   { 
     chariot->move(chariot);
-    delay(DELAY_CHECK_MOVE_POSITION);
+    delay(GAME_DELAY_CHECK);
   }
   chariot->stop(chariot);
 
@@ -145,8 +136,7 @@ void pour(chariot_t *chariot){
 }
 
 
-
-static chariot_t chariot={
+chariot_t chariot={
   .position = 0,
   .way= WAY_STOP,
   .speed = 0,
