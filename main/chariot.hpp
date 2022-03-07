@@ -4,8 +4,6 @@
 #ifndef CHARIOT_H
 #define CHARIOT_H
 
-
-
 typedef enum way 
 {
   WAY_RIGHT,
@@ -30,4 +28,6 @@ typedef struct chariot
   void (*pour)(struct chariot *chariot);
 }chariot_t;
 
+
+void test_charriot(chariot_t *chariot);
 #endif
