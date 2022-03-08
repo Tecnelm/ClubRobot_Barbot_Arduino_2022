@@ -25,14 +25,14 @@ void game_run(game_t *game)
     if(millis() - game->lastcheck  > GAME_DELAY_CHECK)
     {
         game->lastcheck = millis();
-        if(digitalRead(game->button[0]) && digitalRead(game->button[1]))
+        if(!digitalRead(game->button[0]) && !digitalRead(game->button[1]))
         {
 
-        }else if (digitalRead(game->button[0]))
+        }else if (!digitalRead(game->button[0]))
         {
             game->chariot->right(game->chariot);
 
-        }else if (digitalRead(game->button[1]))
+        }else if (!digitalRead(game->button[1]))
         {
            game->chariot->left(game->chariot);
         }
