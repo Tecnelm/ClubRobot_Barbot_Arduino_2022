@@ -1,5 +1,4 @@
 #include "communication.hpp"
-#include <Arduino.h>
 #include <stdio.h>
 
 void init_serial()
@@ -26,7 +25,7 @@ void check_serial_message(communication_t *communication)
   }
 }
 
-void parse_message(char *buffer, uint8_t size){
+void parse_message(char *buffer, char size){
   Serial.print(create_commande(COMMANDE_DEBUG_STR,buffer));
   int commande;
   int value;
@@ -41,3 +40,26 @@ void parse_message(char *buffer, uint8_t size){
   else
     Serial.println(create_commande(COMMANDE_RESPONSE,STATUS_ERROR));
 }
+
+void communication_send_command(command_t command,status_t status)
+{
+  if(Serial)
+  {
+    Serial.print(create_commande(command,status));
+  }
+}
+void communication_send_command_str(String str)
+{
+  if(Serial)
+  {
+    Serial.print(create_commande(COMMANDE_DEBUG_STR,str));
+  }
+}
+
+communication_t communication={
+  .buffer = communication_receive_buffer,
+  .init = init_serial,
+  .check_message=check_serial_message,
+  .send_command = communication_send_command,
+  .send_command_str =  communication_send_command_str
+};
