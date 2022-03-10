@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef TANK_H
+#define TANK_H
 typedef struct tank {
   void (*init)(struct tank* tank);
   void (*refill_tank)(struct tank* tank);
@@ -9,4 +9,7 @@ typedef struct tank {
 }tank_t;
 
 void test_tank();
+
+#endif 
+
 

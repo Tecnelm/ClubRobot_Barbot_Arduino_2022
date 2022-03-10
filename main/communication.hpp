@@ -1,17 +1,48 @@
 #include "config.h"
-#include <stdint.h>
+#include <Arduino.h>
+
 
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
+#define create_commande(commande,value) "{commande:"+(String)commande+";value:"+(String)value+"}"
+
+
+
+void parse_message(char *buffer, char size);
+
+
+typedef enum  {
+  COMMANDE_RESPONSE,
+  COMMANDE_SEND_POSITION,
+  COMMANDE_START_GAME,
+  COMMANDE_STOP_GAME,
+  COMMANDE_DEBUG_STR,
+  COMMANDE_COUNT
+}command_t;
+
+typedef enum 
+{
+  STATUS_NONE,
+  STATUS_ERROR,
+  STATUS_SERIAL_CONNECTED,
+  STATUS_OK,
+  STATUS_KO,
+  STATUS_COUNT
+} status_t;
+
+static char communication_receive_buffer[BUFFERSIZE];
+
 typedef struct communication
 {
-  static uint8_t buffer[BUFFERSIZE];
+  char *buffer;
   void (*init)();
   void (*check_message)(struct communication *communication);
+  void (*send_command)(command_t command,status_t status);
+  void (*send_command_str)(String str);
+  
+
   
 }communication_t;
-
-void parse_message(uint8_t *buffer, uint8_t size);
 
 #endif 
