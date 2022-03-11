@@ -97,6 +97,7 @@ void move_position(chariot_t *chariot,char position){
     if(chariot->position > position)
     {
       chariot->right(chariot);
+
     }else if (chariot->position < position)
     {
       chariot->left(chariot);
@@ -113,10 +114,12 @@ void move_position(chariot_t *chariot,char position){
     chariot->check(chariot);
     delay(GAME_DELAY_CHECK);
   }
-  chariot->center(chariot);
+  while (chariot->multiple_position)
+  {
+    chariot->move(chariot);
+    delay(GAME_DELAY_CHECK);
+  }  
   PRINT("Charriot : Test Move to defined prosition function end; position = "+String(position,DEC));
-
-  
 }
 
 void chariot_check(chariot_t *chariot){
@@ -171,9 +174,13 @@ void chariot_pour(chariot_t *chariot){
 
 void chariot_center(chariot_t *chariot)
 { 
+  char position = GAME_POSITION_CENTER;
+  chariot->move_position(chariot,position);
 
   PRINT("Charriot : SLOW SPEED TO REACH CENTER");
   char sign = sign(chariot->speed);
+
+
   while((chariot->speed)*sign> MOTOR_CENTER_SPEED_VALUE-MOTOR_SLICE_VALUE && (chariot->speed)*sign < MOTOR_CENTER_SPEED_VALUE+MOTOR_SLICE_VALUE)
   {
     switch (chariot->way)
@@ -188,9 +195,24 @@ void chariot_center(chariot_t *chariot)
     chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
+
+    switch (chariot->way)
+  {
+    case WAY_RIGHT:
+      position++;
+      break;
+    
+    case WAY_LEFT:
+      position++;
+    break;
+  }
   
   chariot->speed = MOTOR_CENTER_SPEED_VALUE * sign;
-  chariot->move(chariot);
+  while (chariot->position != position) /// continue mouvement 
+  { 
+    chariot->check(chariot);
+    delay(GAME_DELAY_CHECK);
+  }
 
   PRINT("Charriot : WAIT SINGLE BUTTON");
   while(chariot->multiple_position)
