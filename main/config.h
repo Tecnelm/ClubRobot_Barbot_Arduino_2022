@@ -2,7 +2,6 @@
 #define CONFIG_H
 
 #define DEBUG
-#define DEBUG_STR
 
 
 

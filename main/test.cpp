@@ -127,21 +127,22 @@ void test_electrovalves(electrovalve_array_t *electrovalves )
   for(int a = 0 ; a<3 ; a++)
   {
     PRINT("ELECTROVALVE OPEN TEST");
-    for( int i = 5 ; i >=0 ; i-- )
-    {
-      electrovalves->open(&electrovalves->array[i]);
-      delay(500);
-    }
-    PRINT("ELECTROVALVE CLOSE TEST");
-    for( int i = 0 ; i <=6 ; i++ )
-    {
-      electrovalves->close(&electrovalves->array[i]);
-      delay(500);
-    }
+    // for( int i = 5 ; i >=0 ; i-- )
+    // {
+    //   electrovalves->open(&electrovalves->array[i]);
+    //   delay(500);
+    // }
+    // PRINT("ELECTROVALVE CLOSE TEST");
+    // for( int i = 0 ; i <=6 ; i++ )
+    // {
+    //   electrovalves->close(&electrovalves->array[i]);
+    //   delay(500);
+    // }
     PRINT("ELECTROVALVE OPEN-TIME TEST");
     for( int i = 0 ; i <=6 ; i++ )
     {
       electrovalves->openTime(&electrovalves->array[i],500);
+      delay(1000);
     }
   }
   PRINT("ELECTROVALVE END TEST");
