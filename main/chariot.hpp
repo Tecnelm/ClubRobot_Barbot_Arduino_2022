@@ -31,5 +31,4 @@ typedef struct chariot
 }chariot_t;
 
 
-void test_charriot(chariot_t *chariot);
 #endif

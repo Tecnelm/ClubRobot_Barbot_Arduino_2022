@@ -2,8 +2,11 @@
 #define CONFIG_H
 
 #define DEBUG
+#define DEBUG_STR
 
-#ifdef DEBUG
+
+
+#ifdef DEBUG_STR
 #define PRINT(message) Serial.println("Debug: "+((String)message))
 #else
 #define PRINT(message) 0

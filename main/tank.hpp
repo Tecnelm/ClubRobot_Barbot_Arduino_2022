@@ -8,7 +8,6 @@ typedef struct tank {
 
 }tank_t;
 
-void test_tank();
 
 #endif 
 
