@@ -14,7 +14,6 @@
 
     extern game_t game;
 
-    void test_pump(game_t *game);
     void test_charriot(chariot_t *chariot);
     void test_tank(tank_t *tank);
     void test_electrovalves(electrovalve_array_t *electrovalves);

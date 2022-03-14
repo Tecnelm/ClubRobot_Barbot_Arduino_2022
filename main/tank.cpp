@@ -6,15 +6,16 @@
 void tank_init(struct tank* tank)
 {
   pinMode(tank->pump,OUTPUT);
+  pinMode(tank->sensor,INPUT);
 }
 
 void refill_tank(struct tank* tank)
 {
-  if (analogRead(tank->sensor) > THRESHOLD_TANK_FULL)
+  if (!digitalRead(tank->sensor))
   {
     PRINT("START REFILL MAIN TANK");
     pinMode(tank->pump,OPEN);
-    while(analogRead(tank->sensor) > THRESHOLD_TANK_FULL);
+    while(!digitalRead(tank->sensor));
     pinMode(tank-> pump,CLOSE);
     PRINT("END REFILLING MAIN TANK");
   }

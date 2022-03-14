@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "test.hpp"
 
+extern game_t game;
 void setup() {
   #ifdef DEBUG
     test_init();
@@ -20,7 +21,7 @@ void loop() {
     {
       case GAME_STATE_IDDLE:
         game.iddle(&game);
-      break;$
+      break;
       case GAME_STATE_RUN:
         game.run(&game);
       break;

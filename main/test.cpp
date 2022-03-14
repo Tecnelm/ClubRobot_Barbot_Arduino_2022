@@ -15,26 +15,8 @@ void test_init()
 }
 void test_loop()
 {
-    test_pump(&game);
     test_electrovalves(&electrovalves);
     
-}
-void test_pump(game_t *game)
-{
-    game->init(game);
-
-    PRINT("MAIN_PUMP: BEGIN MAIN TEST PUMP");
-
-    digitalWrite(game->main_pump,OPEN);
-    delay(1000);
-    digitalWrite(game->main_pump,CLOSE);
-    delay(1000);
-    digitalWrite(game->main_pump,OPEN);
-    delay(1000);
-    digitalWrite(game->main_pump,CLOSE);
-
-    PRINT("MAIN_PUMP: END MAIN TEST PUMP");
-
 }
 
 void test_charriot(chariot_t *chariot)

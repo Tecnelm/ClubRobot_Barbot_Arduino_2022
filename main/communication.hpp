@@ -1,7 +1,6 @@
 #include "config.h"
 #include <Arduino.h>
 
-
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
@@ -18,6 +17,7 @@ typedef enum  {
   COMMANDE_START_GAME,
   COMMANDE_STOP_GAME,
   COMMANDE_DEBUG_STR,
+  COMMANDE_STATE_GLASS,
   COMMANDE_COUNT
 }command_t;
 

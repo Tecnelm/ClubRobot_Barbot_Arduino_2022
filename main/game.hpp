@@ -22,6 +22,13 @@ enum state {
   GAME_STATE_COUNT
 };
 
+enum glass_state
+{
+  SATE_GLASS_ABSENT,
+  SATE_GLASS_PRESENT,
+  STATE_GLASS_COUNT
+};
+
 typedef struct game {
   int lastcheck;
   enum state state;
@@ -29,8 +36,8 @@ typedef struct game {
   communication_t *communication;
   electrovalve_array_t *electrovalve;
   tank_t *tank ;
+  enum glass_state state_glass ;
   int button[BUTTON_SIZE];
-  int main_pump;
   int sharp_sensor;
   void (*init)(struct game *game);
   void (*run)(struct game *game);
