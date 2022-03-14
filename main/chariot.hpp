@@ -15,6 +15,7 @@ typedef enum way
 typedef struct chariot
 {
   char position;  
+  char multiple_position;
   way_t way; 
   int speed;
   char sensor_position_array[SENSOR_POSITION_SIZE];
@@ -26,8 +27,8 @@ typedef struct chariot
   void (*move)(struct chariot *chariot);
   void (*check)(struct chariot *chariot);
   void (*pour)(struct chariot *chariot);
+  void (*center)(struct chariot *chariot);
 }chariot_t;
 
 
-void test_charriot(chariot_t *chariot);
 #endif

@@ -3,7 +3,9 @@
 
 #define DEBUG
 
-#ifdef DEBUG
+
+
+#ifdef DEBUG_STR
 #define PRINT(message) Serial.println("Debug: "+((String)message))
 #else
 #define PRINT(message) 0
@@ -43,9 +45,14 @@
 #define MOTOR_SPEED_MAX_TIME_MS 100
 #define MOTOR_MAX_VALUE 200
 #define MOTOR_MIN_VALUE 0 
-#define MOTOR_MOVE_POSITION_MULTIPLE 5
-
 #define MOTOR_SLICE_VALUE  (((MOTOR_MAX_VALUE - MOTOR_MIN_VALUE)*GAME_DELAY_CHECK)/MOTOR_SPEED_MAX_TIME_MS)
+
+#define MOTOR_MOVE_POSITION_MULTIPLE ((MOTOR_MAX_VALUE/MOTOR_SLICE_VALUE))
+#define MOTOR_CENTER_SPEED_VALUE ((MOTOR_SLICE_VALUE*2)) /// must be higher than a step 
+
+//#define MOTOR_SLICE_VALUE  20
+//#define MOTOR_CENTER_SPEED_VALUE 80 /// must be higher than a step 
+//#define MOTOR_MOVE_POSITION_MULTIPLE 5
 
 #define PIN_SERVO 3
 #define SERVO_ANGLE_MIN 20

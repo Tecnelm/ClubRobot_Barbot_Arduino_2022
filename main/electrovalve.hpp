@@ -19,7 +19,6 @@ typedef struct electrovalve_array{
 
 }electrovalve_array_t;
 
-void test_electrovalves();
 
 
 
