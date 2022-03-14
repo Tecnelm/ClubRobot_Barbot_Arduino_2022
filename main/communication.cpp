@@ -1,5 +1,6 @@
 #include "communication.hpp"
 #include <stdio.h>
+#include "callback.hpp"
 
 void init_serial()
 {
@@ -34,6 +35,10 @@ void parse_message(char *buffer, char size){
       switch(commande)
       {
         case COMMANDE_SEND_POSITION:
+          on_position_receive(&game,value);
+        break;
+        case COMMANDE_STOP_GAME:
+          on_game_stop_receive(&game,value);
         break;
       }
   }
