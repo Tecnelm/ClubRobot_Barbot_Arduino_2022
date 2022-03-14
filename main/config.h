@@ -3,7 +3,9 @@
 
 #define DEBUG
 
-#ifdef DEBUG
+
+
+#ifdef DEBUG_STR
 #define PRINT(message) Serial.println("Debug: "+((String)message))
 #else
 #define PRINT(message) 0
