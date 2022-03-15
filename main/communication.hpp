@@ -4,7 +4,7 @@
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-#define create_commande(commande,value) "{commande:"+(String)commande+";value:"+(String)value+"}"
+#define create_commande(commande,value) "{commande="+(String)commande+";value="+(String)value+"}"
 
 
 

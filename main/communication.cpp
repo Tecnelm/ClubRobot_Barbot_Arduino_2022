@@ -30,7 +30,7 @@ void parse_message(char *buffer, char size){
   Serial.print(create_commande(COMMANDE_DEBUG_STR,buffer));
   int commande;
   int value;
-  if(sscanf((char*)buffer,"{commande:%d;value:%d}",&commande,&value) == 2)
+  if(sscanf((char*)buffer,"{commande=%d;value=%d}",&commande,&value) == 2)
   {
       switch(commande)
       {
