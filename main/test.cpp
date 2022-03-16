@@ -31,40 +31,20 @@ void test_charriot(chariot_t *chariot)
 
   chariot->init(chariot);
   PRINT("Charriot : Test deplacement");
-
   
-  // for(int i = 0 ; i<4; i++)
-  // {
-  //   chariot->left(chariot);
-  //   PRINT(chariot->speed);
-  //   chariot->move(chariot);
-  //   delay(GAME_DELAY_CHECK);
-  // }
-  // delay(1000);
-  // for(int i = 0 ; i<8 ; i++)
-  // {
-  //   chariot->right(chariot);
-  //   chariot->move(chariot);
-  //   delay(GAME_DELAY_CHECK);
-  // }
-  // delay(1000);
-  // PRINT("Charriot : Test stop");
 
-  // chariot->stop(chariot);
-  
-  // delay(5000);
-  // PRINT("Charriot : Test pour");
-  // chariot->pour(chariot);
 
   PRINT("Charriot : Move to position 3");
-  //chariot->move_position(chariot,0);
-  //delay(1000);
-  //chariot->move_position(chariot,5);
+  chariot->move_position(chariot,0);
+  delay(1000);
+  chariot->move_position(chariot,5);
   PRINT("Charriot : Move to position 3");
-  //delay(1000);
+  delay(1000);
   PRINT("Charriot : center start ");
-  //chariot->center(chariot);
+  chariot->center(chariot);
   PRINT("Charriot : center end ");
+  PRINT("Charriot : Test pour");
+  chariot->pour(chariot);
 
   PRINT("Charriot : test END");
 
@@ -90,11 +70,8 @@ void test_charriot(chariot_t *chariot)
         {
             double tmp =  chariot -> speed * DIVIDE_SPEED;
             chariot -> speed  = int (tmp);
-        }
-        
-        
+        }    
     }
-    Serial.println("speed "+String(chariot->speed,DEC));
     chariot->move(chariot);  
   }
 

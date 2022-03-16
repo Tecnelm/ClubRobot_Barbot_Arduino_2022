@@ -32,5 +32,7 @@ void loop() {
         game.reset(&game);
       break;
     }
+    game->communication->check_message(game->communication);
+
   #endif
 }

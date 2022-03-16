@@ -8,6 +8,7 @@ void tank_init(struct tank* tank)
   pinMode(tank->pump,OUTPUT);
   digitalWrite(tank->pump,CLOSE);
   pinMode(tank->sensor,INPUT);
+  tank->refill_tank(tank);
 }
 
 void refill_tank(struct tank* tank)

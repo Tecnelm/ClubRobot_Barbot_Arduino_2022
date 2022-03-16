@@ -2,6 +2,7 @@
 #include "Arduino.h"
 
 
+int repour = 0;
 void game_init(game_t *game)
 {
     for(int i = 0 ; i < BUTTON_SIZE ; i++)
@@ -15,35 +16,29 @@ void game_init(game_t *game)
     game->tank->init(game->tank);
 
     game->lastcheck = millis();
-    game->reset(game);
     game->state = GAME_STATE_IDDLE;    
     
 }
 void game_run(game_t *game)
 {
-    if(millis() - game->lastcheck  > GAME_DELAY_CHECK)
+     if(millis() - game->lastcheck  > GAME_DELAY_CHECK)
     {
-        game->lastcheck = millis();
-        if(!digitalRead(game->button[0]) && !digitalRead(game->button[1]))
-        {
-
-        }else if (!digitalRead(game->button[0]))
+        game->lastcheck= millis();
+        if (!digitalRead(PIN_RIGHT_BUTTON) && digitalRead(PIN_LEFT_BUTTON) )
         {
             game->chariot->right(game->chariot);
 
-        }else if (!digitalRead(game->button[1]))
+        }else if (!digitalRead(PIN_LEFT_BUTTON) && digitalRead(PIN_RIGHT_BUTTON))
         {
-           game->chariot->left(game->chariot);
+            game->chariot->left(game->chariot);
         }
         else
         {
-            double tmp =   game->chariot -> speed * 0.3;
-             game->chariot -> speed  = int (tmp);
-        }
-        game->chariot->move(game->chariot);
-        
+            double tmp =  game->chariot -> speed * DIVIDE_SPEED;
+            game->chariot -> speed  = int (tmp);
+        }    
     }
-    game->communication->check_message(game->communication);
+    game->chariot->move(game->chariot);  
 
 }
 void game_iddle(game_t *game)
@@ -73,7 +68,6 @@ void game_iddle(game_t *game)
         }
        
     }
-    game->communication->check_message(game->communication);
 
 }
 void game_reset(game_t *game)
@@ -91,16 +85,17 @@ void game_reset(game_t *game)
     game->chariot->speed = 0;
     game->chariot->move(game->chariot);
     game->tank->refill_tank(game->tank);
-    game->communication->check_message(game->communication);
 
 }
 void game_end(game_t *game)
 {
-    game->chariot->move_position(game->chariot,GAME_POSITION_CENTER);
     game->chariot->center(game->chariot);
     game->chariot->pour(game->chariot);
-    game->tank->refill_tank(game->tank);
-    game->communication->check_message(game->communication);
+    if (!repour){
+        game->tank->refill_tank(game->tank);
+        repour++;
+        repour%=2;
+    }
     game->state = GAME_STATE_IDDLE;
 }
 
