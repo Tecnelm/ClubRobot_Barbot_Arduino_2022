@@ -165,7 +165,7 @@ void move_position(chariot_t *chariot, char position)
       else
         chariot->speed = -MOTOR_MIN_VALUE;
     }
-    chariot->stop();
+    chariot->stop(chariot);
     chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
@@ -269,7 +269,7 @@ void chariot_center(chariot_t *chariot)
   chariot->move_position(chariot, GAME_POSITION_CENTER - 1);
   chariot->move_position(chariot, GAME_POSITION_CENTER);
 
-  chariot->speed = MOTOR_MIN_VALUE
+  chariot->speed = MOTOR_MIN_VALUE;
 
       while (!digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER1]) && !digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER])) /// continue mouvement
   {
