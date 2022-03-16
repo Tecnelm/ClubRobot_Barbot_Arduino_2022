@@ -1,7 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-// #define DEBUG
+#define DEBUG
+#define DEBUG_STR1
 
 
 
