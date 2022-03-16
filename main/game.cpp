@@ -77,9 +77,10 @@ void game_iddle(game_t *game)
                 game->state_glass = SATE_GLASS_ABSENT;
             }
         }
-        
-        
+       
     }
+    game->communication->check_message(game->communication);
+
 }
 void game_reset(game_t *game)
 {
@@ -96,6 +97,8 @@ void game_reset(game_t *game)
     game->chariot->speed = 0;
     game->chariot->move(game->chariot);
     game->tank->refill_tank(game->tank);
+    game->communication->check_message(game->communication);
+
 }
 void game_end(game_t *game)
 {
@@ -103,7 +106,7 @@ void game_end(game_t *game)
     game->chariot->center(game->chariot);
     game->chariot->pour(game->chariot);
     game->tank->refill_tank(game->tank);
-
+    game->communication->check_message(game->communication);
     game->state = GAME_STATE_IDDLE;
 }
 
@@ -128,4 +131,3 @@ game_t game ={
     .reset = game_reset,
     .end = game_end
 };
-
