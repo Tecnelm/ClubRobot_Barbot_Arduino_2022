@@ -19,8 +19,9 @@ void on_position_receive(game_t *game,int value)
     {
         PRINT("Callback : position");
 
-        if(!digitalRead(game->chariot->sensor_position_array[value]))
+        if(digitalRead(game->chariot->sensor_position_array[value]))
         {
+            PRINT("Callback : position : OK");
             game->communication->send_command(COMMANDE_SEND_POSITION,STATUS_OK);
             game->electrovalve->openTime(&(game->electrovalve->array[value]),TIME_ELECTROVALVE_OPEN_MS);
         }
