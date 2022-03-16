@@ -4,14 +4,14 @@
 
 void test_init()
 {
-//    #ifdef DEBUG_STR
-//        Serial.begin(BAUDRATES);
-//        Serial.setTimeout(TIMEOUT_SERIAL);
-//        while(!Serial){
-//            ;
-//        }
-//        PRINT("SERIAL OK");
-//    #endif
+    #ifdef DEBUG_STR
+        Serial.begin(BAUDRATES);
+        Serial.setTimeout(TIMEOUT_SERIAL);
+        while(!Serial){
+            ;
+        }
+        PRINT("SERIAL OK");
+    #endif
 }
 void test_loop()
 {
@@ -19,7 +19,8 @@ void test_loop()
     //test_callback(&communication);
     //test_electrovalves(&electrovalves);
    // test_tank(&tank);
-   test_charriot(&chariot);
+   //test_charriot(&chariot);
+   test_tank(&tank);
     
 }
 
@@ -148,5 +149,13 @@ void test_callback(communication_t *communication)
   }
 }
 
+void test_tank(tank_t *tank){
+  PRINT("TANK SETUP TEST");
+  tank->init(tank);
+  PRINT("TANK REFILL TEST");
+  tank->refill_tank(tank);
+  delay(1000);
+  PRINT("TANK END TEST");
+}
 
 #endif
