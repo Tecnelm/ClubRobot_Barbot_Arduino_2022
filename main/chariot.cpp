@@ -8,7 +8,7 @@ Servo servo_chariot;
 
 
 void init_chariot(chariot_t *chariot){
-  servo_chariot.attach(PIN_SERVO);
+  //servo_chariot.attach(PIN_SERVO);
   pinMode(PIN_1_MOTOR, OUTPUT);
   pinMode(PIN_2_MOTOR, OUTPUT);
   pinMode(PIN_EN_MOTOR,OUTPUT);
@@ -16,6 +16,9 @@ void init_chariot(chariot_t *chariot){
   {
     pinMode(chariot->sensor_position_array[i],INPUT_PULLUP);
   }
+  pinMode(chariot->sensor_FDC[0],INPUT_PULLUP);
+  pinMode(chariot->sensor_FDC[1],INPUT_PULLUP);
+
   servo_chariot.write(SERVO_ANGLE_MIN);
 
 }
@@ -34,39 +37,48 @@ void charriot_left(chariot_t *chariot){
 }
 
 void choose_way(chariot_t *chariot){
-  if(chariot->speed> -MOTOR_SLICE_VALUE && chariot->speed <MOTOR_SLICE_VALUE)
+  if(digitalRead(chariot->sensor_FDC[0]) || digitalRead(chariot->sensor_FDC[1]))
   {
-    if (chariot->way != WAY_STOP)
-    {
-      chariot->way = WAY_STOP;
-      chariot->speed = 0;
       digitalWrite(PIN_1_MOTOR, LOW);
       digitalWrite(PIN_2_MOTOR, LOW);
-      analogWrite(PIN_EN_MOTOR,chariot->speed); 
-      PRINT("Charriot : STOP MOTOR");
-    }
-
-  }else if (chariot -> speed < 0)
-  {
-    if(chariot->way != WAY_RIGHT)
+      analogWrite(PIN_EN_MOTOR,0); 
+      PRINT("FIN DE COURSE");
+  }
+  else{
+    if(chariot->speed> -MOTOR_SLICE_VALUE && chariot->speed <MOTOR_SLICE_VALUE)
     {
-      chariot->way = WAY_RIGHT;
-      digitalWrite(PIN_2_MOTOR, LOW);
-      digitalWrite(PIN_1_MOTOR, HIGH);
-    }
-    analogWrite(PIN_EN_MOTOR,-(chariot->speed)); 
-    PRINT("Charriot : Set MOTOR RIGHT value = "+-chariot->speed);
+      if (chariot->way != WAY_STOP)
+      {
+        chariot->way = WAY_STOP;
+        chariot->speed = 0;
+        digitalWrite(PIN_1_MOTOR, LOW);
+        digitalWrite(PIN_2_MOTOR, LOW);
+        analogWrite(PIN_EN_MOTOR,chariot->speed); 
+        PRINT("Charriot : STOP MOTOR");
+      }
 
-  }else if (chariot->speed > 0)
-  {
-    if(chariot->way != WAY_LEFT)
+    }else if (chariot -> speed < 0)
     {
-      chariot->way = WAY_LEFT;
-      digitalWrite(PIN_1_MOTOR, LOW);
-      digitalWrite(PIN_2_MOTOR, HIGH);
+      if(chariot->way != WAY_RIGHT)
+      {
+        chariot->way = WAY_RIGHT;
+        digitalWrite(PIN_2_MOTOR, LOW);
+        digitalWrite(PIN_1_MOTOR, HIGH);
+      }
+      analogWrite(PIN_EN_MOTOR,-(chariot->speed)); 
+      PRINT("Charriot : Set MOTOR RIGHT value = "+-chariot->speed);
+
+    }else if (chariot->speed > 0)
+    {
+      if(chariot->way != WAY_LEFT)
+      {
+        chariot->way = WAY_LEFT;
+        digitalWrite(PIN_1_MOTOR, LOW);
+        digitalWrite(PIN_2_MOTOR, HIGH);
+      }
+      analogWrite(PIN_EN_MOTOR,(chariot->speed)); 
+      PRINT("Charriot : Set MOTOR LEFT value = "+((chariot->speed)));
     }
-    analogWrite(PIN_EN_MOTOR,(chariot->speed)); 
-    PRINT("Charriot : Set MOTOR LEFT value = "+((chariot->speed)));
   }
   chariot->check(chariot);
 }
@@ -111,7 +123,7 @@ void move_position(chariot_t *chariot,char position){
   }
   while (chariot->position != position) /// continue mouvement 
   { 
-    chariot->check(chariot);
+    chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
   while (chariot->multiple_position)
@@ -129,7 +141,7 @@ void chariot_check(chariot_t *chariot){
   case WAY_RIGHT:
     for(int i = SENSOR_POSITION_SIZE-1 ; i >= 0; i--)
     {
-      if (!digitalRead(chariot->sensor_position_array[i]))
+      if (digitalRead(chariot->sensor_position_array[i]))
       {
         chariot->multiple_position++;
         chariot->position = i;
@@ -140,7 +152,7 @@ void chariot_check(chariot_t *chariot){
   case WAY_LEFT:
     for(int i = 0 ; i < SENSOR_POSITION_SIZE ; i ++)
     {
-      if (!digitalRead(chariot->sensor_position_array[i]))
+      if (digitalRead(chariot->sensor_position_array[i]))
       {
         chariot->multiple_position++;
         chariot->position = i;
@@ -149,6 +161,20 @@ void chariot_check(chariot_t *chariot){
     }
     break;
   }
+  if(digitalRead(chariot->sensor_FDC[0]))
+  {
+    PRINT("Charriot : Test check position ; position = FDC DROITE ");
+
+    analogWrite(PIN_EN_MOTOR,0); 
+
+  }
+  if(digitalRead(chariot->sensor_FDC[1]))
+  {
+    PRINT("Charriot : Test check position ; position = FDC GAUCHE ");
+
+    analogWrite(PIN_EN_MOTOR,0); 
+  }
+    
 }
 
 // Pour vider dans le verre
@@ -181,22 +207,7 @@ void chariot_center(chariot_t *chariot)
   char sign = sign(chariot->speed);
 
 
-  while((chariot->speed)*sign> MOTOR_CENTER_SPEED_VALUE-MOTOR_SLICE_VALUE && (chariot->speed)*sign < MOTOR_CENTER_SPEED_VALUE+MOTOR_SLICE_VALUE)
-  {
-    switch (chariot->way)
-    {
-    case WAY_RIGHT:
-      chariot->left(chariot);
-      break;
-    case WAY_LEFT:
-      chariot->right(chariot);
-      break;
-    }
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
-  }
-
-    switch (chariot->way)
+  switch (chariot->way)
   {
     case WAY_RIGHT:
       position++;
@@ -210,14 +221,14 @@ void chariot_center(chariot_t *chariot)
   chariot->speed = MOTOR_CENTER_SPEED_VALUE * sign;
   while (chariot->position != position) /// continue mouvement 
   { 
-    chariot->check(chariot);
+    chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
 
   PRINT("Charriot : WAIT SINGLE BUTTON");
   while(chariot->multiple_position)
   {
-    chariot->check(chariot);
+    chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   };
 
@@ -237,6 +248,10 @@ chariot_t chariot={
     PIN_SENSOR_POSITION_3,
     PIN_SENSOR_POSITION_4,
     PIN_SENSOR_POSITION_5
+  },
+  .sensor_FDC = {
+    PIN_SENSOR_POSITION_FDCD,
+    PIN_SENSOR_POSITION_FDCG
   },
   .init=init_chariot,
   .right = charriot_right,

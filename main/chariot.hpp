@@ -19,6 +19,7 @@ typedef struct chariot
   way_t way; 
   int speed;
   char sensor_position_array[SENSOR_POSITION_SIZE];
+  char sensor_FDC[SENSOR_FDC_SIZE];
   void (*init)(struct chariot *chariot);
   void (*right)(struct chariot *chariot);
   void (*left)(struct chariot *chariot);

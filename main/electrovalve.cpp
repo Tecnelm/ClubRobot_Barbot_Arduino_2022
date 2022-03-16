@@ -7,6 +7,7 @@ void init_vanne(electrovalve_array_t *valve_array){
     PRINT(("CONFIGURE VALVE "+String(i,DEC)));
     struct electrovalve valve = valve_array->array[i];
     pinMode(valve.pin,OUTPUT);
+    digitalWrite(valve.pin,CLOSE);
   }
 }
  void open(struct electrovalve *valve ){

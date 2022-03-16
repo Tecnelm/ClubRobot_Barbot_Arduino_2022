@@ -15,51 +15,46 @@ void test_init()
 }
 void test_loop()
 {
-    test_electrovalves(&electrovalves);
+    //test_electrovalves(&electrovalves);
+   // test_tank(&tank);
+   test_charriot(&chariot);
     
 }
 
 void test_charriot(chariot_t *chariot)
 {
   PRINT("Charriot : Begin Test");
-  
+
   chariot->init(chariot);
-  PRINT("Charriot : Test right/left");
-
-  for(int i = 0 ; i<5 ; i++)
-    chariot->right(chariot);
-  for(int i = 0 ; i<10 ; i++)
-    chariot->left(chariot);
-  for(int i = 0 ; i<5 ; i++)
-    chariot->right(chariot);
-
-  delay(5000);
   PRINT("Charriot : Test deplacement");
 
-  for(int i = 0 ; i<10 ; i++)
-  {
-    chariot->left(chariot);
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
-  }
-  delay(2000);
-  for(int i = 0 ; i<20 ; i++)
-  {
-    chariot->right(chariot);
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
-  }
-  delay(2000);
-  PRINT("Charriot : Test stop");
-
-  chariot->stop(chariot);
   
-  delay(5000);
-  PRINT("Charriot : Test pour");
-  chariot->pour(chariot);
+  // for(int i = 0 ; i<4; i++)
+  // {
+  //   chariot->left(chariot);
+  //   PRINT(chariot->speed);
+  //   chariot->move(chariot);
+  //   delay(GAME_DELAY_CHECK);
+  // }
+  // delay(1000);
+  // for(int i = 0 ; i<8 ; i++)
+  // {
+  //   chariot->right(chariot);
+  //   chariot->move(chariot);
+  //   delay(GAME_DELAY_CHECK);
+  // }
+  // delay(1000);
+  // PRINT("Charriot : Test stop");
+
+  // chariot->stop(chariot);
+  
+  // delay(5000);
+  // PRINT("Charriot : Test pour");
+  // chariot->pour(chariot);
 
   PRINT("Charriot : Move to position 3");
   chariot->move_position(chariot,2);
+  chariot->move_position(chariot,5);
   PRINT("Charriot : test END");
 
   pinMode(PIN_RIGHT_BUTTON,INPUT_PULLUP);
