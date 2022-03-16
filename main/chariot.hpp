@@ -31,5 +31,6 @@ typedef struct chariot
   void (*center)(struct chariot *chariot);
 }chariot_t;
 
+int fdc(chariot_t *chariot);
 
 #endif

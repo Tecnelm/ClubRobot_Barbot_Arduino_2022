@@ -5,7 +5,6 @@
 #define sign(value) (value < 0 ? -1 : 1)
 
 Servo servo_chariot;
-int fdc(chariot_t *chariot);
 
 void init_chariot(chariot_t *chariot)
 {
@@ -26,22 +25,35 @@ void init_chariot(chariot_t *chariot)
   chariot->check(chariot);
   chariot->way = WAY_STOP;
 }
-
+ 
 void charriot_right(chariot_t *chariot)
 {
   if (!(digitalRead(chariot->sensor_position_array[0])))
   {
-    if(chariot->way == WAY_STOP)
-      chariot->speed -= MOTOR_MIN_VALUE;
+    if (chariot->way == WAY_LEFT)
+    {
+      double tmp =  chariot -> speed * DIVIDE_SPEED;
+      chariot -> speed  = int (tmp);
+    }else
+    {
 
-    chariot->speed -= MOTOR_SLICE_VALUE;
+      PRINT("SPEED RIGHT= "+chariot->speed);
+      if(chariot->way == WAY_STOP)
+        chariot->speed -= MOTOR_MIN_VALUE;
+      chariot->speed -= MOTOR_SLICE_VALUE;
 
     chariot->speed = chariot->speed < -MOTOR_MAX_VALUE ? -MOTOR_MAX_VALUE : chariot->speed;
+    PRINT("SPEED RIGHT= "+chariot->speed);
+    }
+
   }
   else
   {
-    if (chariot->way != WAY_STOP)
-      chariot->left(chariot);
+    if (chariot->way != WAY_STOP )
+    {
+      double tmp =  chariot -> speed * DIVIDE_SPEED;
+      chariot -> speed  = int (tmp);
+    }
   }
 
   PRINT("Charriot : move RIGHT value = " + chariot->speed);
@@ -51,16 +63,30 @@ void charriot_left(chariot_t *chariot)
 {
   if (!(digitalRead(chariot->sensor_position_array[5])))
   {
+     if (chariot->way == WAY_RIGHT)
+    {
+      double tmp =  chariot -> speed * DIVIDE_SPEED;
+      chariot -> speed  = int (tmp);
+    }else
+    {
+      PRINT("SPEED LEFT = "+chariot->speed);
+
     if(chariot->way == WAY_STOP);
       chariot->speed += MOTOR_MIN_VALUE;
     chariot->speed += MOTOR_SLICE_VALUE;
+      
+    PRINT("SPEED LEFT = "+chariot->speed);
     chariot->speed = chariot->speed > MOTOR_MAX_VALUE ? MOTOR_MAX_VALUE : chariot->speed;
     PRINT("Charriot : move LEFT value = " + chariot->speed);
+    }
   }
   else
   {
     if (chariot->way != WAY_STOP)
-      chariot->right(chariot);
+    {
+      double tmp =  chariot -> speed * DIVIDE_SPEED;
+      chariot -> speed  = int (tmp);
+    }
   }
 }
 
@@ -111,13 +137,12 @@ void charriot_stop(chariot_t *chariot)
 {
   PRINT("Charriot : Test STOP function start");
   while (chariot->way != WAY_STOP)
-  {
-    if (chariot->way == WAY_RIGHT)
-      chariot->left(chariot);
-    else
-      chariot->right(chariot);
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
+  {    
+      double tmp =  chariot -> speed * DIVIDE_SPEED;
+      chariot -> speed  = int (tmp);
+      chariot->move(chariot);
+      delay(1);
+
   }
   PRINT("Charriot : Test STOP function end");
 }
@@ -130,17 +155,19 @@ void move_position(chariot_t *chariot, char position)
 
   if (chariot->position > position)
   {
-    chariot->speed = -MOTOR_MIN_VALUE;
+    PRINT("CHARRIOT : GO RIGHT");
+    chariot->right(chariot);
   }
   else if (chariot->position < position)
   {
-    chariot->speed = MOTOR_MAX_VALUE;
+    PRINT("CHARRIOT : GO LEFT");
+    chariot->left(chariot);
   }
 
   while (!digitalRead(chariot->sensor_position_array[position])) /// continue mouvement
   {
     chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
+    delay(1);
   }
   while (chariot->multiple_position)
   {
@@ -165,10 +192,12 @@ void move_position(chariot_t *chariot, char position)
       else
         chariot->speed = -MOTOR_MIN_VALUE;
     }
-    chariot->stop(chariot);
     chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
+    delay(1);
+
   }
+  chariot->stop(chariot);
+
   PRINT("Charriot : Test Move to defined prosition function end; position = " + String(position, DEC));
 }
 
@@ -227,15 +256,16 @@ int fdc(chariot_t *chariot)
   if (digitalRead(chariot->sensor_FDC[0]) || digitalRead(chariot->sensor_FDC[1]))
   {
     way_t way;
-    analogWrite(PIN_EN_MOTOR, 0);
 
     if (chariot->speed < 0)
     {
       way = WAY_RIGHT;
+
     }
     else if (chariot->speed > 0)
     {
       way = WAY_LEFT;
+
     }
     else
     {
@@ -250,14 +280,14 @@ int fdc(chariot_t *chariot)
     {
       PRINT("Charriot : position = FDC GAUCHE ");
     }
-
-    if ((way == WAY_LEFT && digitalRead(chariot->sensor_FDC[0])) || (way == WAY_RIGHT && digitalRead(chariot->sensor_FDC[0])))
+    if ((way == WAY_LEFT && digitalRead(chariot->sensor_FDC[0])) || (way == WAY_RIGHT && digitalRead(chariot->sensor_FDC[1])))
     {
       PRINT("FIN DE COURSE OK");
       return 0;
     }
-
     PRINT("FIN DE COURSE FAIL");
+    analogWrite(PIN_EN_MOTOR, 0);
+
     return 1;
   }
   return 0;
@@ -265,16 +295,15 @@ int fdc(chariot_t *chariot)
 
 void chariot_center(chariot_t *chariot)
 {
-
+  
   chariot->move_position(chariot, GAME_POSITION_CENTER - 1);
   chariot->move_position(chariot, GAME_POSITION_CENTER);
 
   chariot->speed = MOTOR_MIN_VALUE;
 
-      while (!digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER1]) && !digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER])) /// continue mouvement
+  while (!digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER1]) || !digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER])) /// continue mouvement
   {
     chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
   }
 
   PRINT("Charriot : STOPING MOUVEMENT");

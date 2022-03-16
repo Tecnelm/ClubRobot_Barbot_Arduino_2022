@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "test.hpp"
+#include "chariot.hpp"
 #ifdef DEBUG
 
 void test_init()
@@ -12,15 +13,15 @@ void test_init()
         }
         PRINT("SERIAL OK");
     #endif
+    //electrovalves.init(&electrovalves);
+    //chariot.init(&chariot);
 }
 void test_loop()
 {
-    //test_electrovalves(&electrovalves);
-    //test_callback(&communication);
-    //test_electrovalves(&electrovalves);
-   // test_tank(&tank);
-   //test_charriot(&chariot);
-   test_tank(&tank);
+    //test_callback(&communication); //PASS
+    //test_electrovalves(&electrovalves); //PASS
+    test_charriot(&chariot);
+    //test_tank(&tank); //PASS
     
 }
 
@@ -56,8 +57,15 @@ void test_charriot(chariot_t *chariot)
   // chariot->pour(chariot);
 
   PRINT("Charriot : Move to position 3");
-  chariot->move_position(chariot,2);
-  chariot->move_position(chariot,5);
+  //chariot->move_position(chariot,0);
+  //delay(1000);
+  //chariot->move_position(chariot,5);
+  PRINT("Charriot : Move to position 3");
+  //delay(1000);
+  PRINT("Charriot : center start ");
+  //chariot->center(chariot);
+  PRINT("Charriot : center end ");
+
   PRINT("Charriot : test END");
 
   pinMode(PIN_RIGHT_BUTTON,INPUT_PULLUP);
@@ -70,31 +78,24 @@ void test_charriot(chariot_t *chariot)
     if(millis() - current  > GAME_DELAY_CHECK)
     {
         current = millis();
-        if(!digitalRead(PIN_RIGHT_BUTTON) && !digitalRead(PIN_LEFT_BUTTON))
-        {
-
-        }else if (!digitalRead(PIN_RIGHT_BUTTON))
+        if (!digitalRead(PIN_RIGHT_BUTTON) && digitalRead(PIN_LEFT_BUTTON) )
         {
             chariot->right(chariot);
 
-        }else if (!digitalRead(PIN_LEFT_BUTTON))
+        }else if (!digitalRead(PIN_LEFT_BUTTON) && digitalRead(PIN_RIGHT_BUTTON))
         {
-           chariot->left(chariot);
+            chariot->left(chariot);
         }
         else
         {
-            if (chariot->way == WAY_RIGHT){
-                chariot->left(chariot);
-            }
-            else if (chariot->way == WAY_LEFT)
-            {
-                chariot->right(chariot);
-            }
+            double tmp =  chariot -> speed * DIVIDE_SPEED;
+            chariot -> speed  = int (tmp);
         }
-        chariot->move(chariot);
+        
         
     }
-
+    Serial.println("speed "+String(chariot->speed,DEC));
+    chariot->move(chariot);  
   }
 
 }

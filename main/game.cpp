@@ -37,13 +37,8 @@ void game_run(game_t *game)
         }
         else
         {
-            if (game->chariot->way == WAY_RIGHT){
-                game->chariot->left(game->chariot);
-            }
-            else if (game->chariot->way == WAY_LEFT)
-            {
-                game->chariot->right(game->chariot);
-            }
+            double tmp =   game->chariot -> speed * 0.3;
+             game->chariot -> speed  = int (tmp);
         }
         game->chariot->move(game->chariot);
         
