@@ -45,6 +45,8 @@ void parse_message(char *buffer, char size){
         case COMMANDE_STOP_GAME:
           on_game_stop_receive(&game,value);
         break;
+        case COMMANDE_START_GAME:
+          on_start_receive(&game,value);
         default:
           PRINT("PARSE MESSAGE = " + "UNIMPLEMENTED");
       }

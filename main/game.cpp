@@ -66,7 +66,6 @@ void game_iddle(game_t *game)
             if (!digitalRead(game->button[0] && !digitalRead(game->button[1])))
             {
                 game->communication->send_command(COMMANDE_START_GAME,STATUS_OK);
-                game->state = GAME_STATE_RUN;
             }
         }
         else

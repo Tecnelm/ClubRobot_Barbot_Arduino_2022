@@ -21,18 +21,27 @@ void init_chariot(chariot_t *chariot)
   pinMode(chariot->sensor_FDC[1], INPUT_PULLUP);
 
   servo_chariot.write(SERVO_ANGLE_MIN);
+
+  chariot->way = WAY_LEFT;
+  chariot->check(chariot);
+  chariot->way = WAY_STOP;
 }
 
 void charriot_right(chariot_t *chariot)
 {
-  if (!(chariot->position == 0 && chariot->way == WAY_RIGHT))
+  if (!(digitalRead(chariot->sensor_position_array[0])))
   {
+    if(chariot->way == WAY_STOP)
+      chariot->speed -= MOTOR_MIN_VALUE;
+
     chariot->speed -= MOTOR_SLICE_VALUE;
+
     chariot->speed = chariot->speed < -MOTOR_MAX_VALUE ? -MOTOR_MAX_VALUE : chariot->speed;
   }
-  else if ((chariot->position == 0 && chariot->way == WAY_RIGHT))
+  else
   {
-    chariot->left(chariot);
+    if (chariot->way != WAY_STOP)
+      chariot->left(chariot);
   }
 
   PRINT("Charriot : move RIGHT value = " + chariot->speed);
@@ -40,24 +49,30 @@ void charriot_right(chariot_t *chariot)
 
 void charriot_left(chariot_t *chariot)
 {
-  if (!(chariot->position == 5 && chariot->way == WAY_LEFT))
+  if (!(digitalRead(chariot->sensor_position_array[5])))
   {
+    if(chariot->way == WAY_STOP);
+      chariot->speed += MOTOR_MIN_VALUE;
     chariot->speed += MOTOR_SLICE_VALUE;
     chariot->speed = chariot->speed > MOTOR_MAX_VALUE ? MOTOR_MAX_VALUE : chariot->speed;
     PRINT("Charriot : move LEFT value = " + chariot->speed);
   }
-  else if ((chariot->position == 5 && chariot->way == WAY_LEFT))
+  else
   {
-    chariot->right(chariot);
+    if (chariot->way != WAY_STOP)
+      chariot->right(chariot);
   }
 }
 
-void choose_way(chariot_t *chariot){
+void choose_way(chariot_t *chariot)
+{
 
-  if(!fdc(chariot)){
-    if (chariot->speed > -MOTOR_SLICE_VALUE && chariot->speed < MOTOR_SLICE_VALUE)
+  if (!fdc(chariot))
+  {
+    if (sign(chariot->speed)*chariot->speed < MOTOR_MIN_VALUE)
     {
-      if (chariot->way != WAY_STOP){
+      if (chariot->way != WAY_STOP)
+      {
         chariot->way = WAY_STOP;
         chariot->speed = 0;
         digitalWrite(PIN_1_MOTOR, LOW);
@@ -109,33 +124,48 @@ void charriot_stop(chariot_t *chariot)
 
 void move_position(chariot_t *chariot, char position)
 {
-
+  way_t way;
   PRINT("Charriot : Test Move to defined prosition function start; position = " + String(position, DEC));
   chariot->stop(chariot);
-  for (int i = 0; i < MOTOR_MOVE_POSITION_MULTIPLE; i++)
+
+  if (chariot->position > position)
   {
-    if (chariot->position > position)
-    {
-      chariot->right(chariot);
-    }
-    else if (chariot->position < position)
-    {
-      chariot->left(chariot);
-    }
-    else // chariot trigger position
-    {
-      break;
-    }
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
+    chariot->speed = -MOTOR_MIN_VALUE;
   }
-  while (chariot->position != position) /// continue mouvement
+  else if (chariot->position < position)
+  {
+    chariot->speed = MOTOR_MAX_VALUE;
+  }
+
+  while (!digitalRead(chariot->sensor_position_array[position])) /// continue mouvement
   {
     chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
   while (chariot->multiple_position)
   {
+    if (position == 0)
+    {
+      if (digitalRead(chariot->sensor_position_array[position + 1]))
+        chariot->speed = -MOTOR_MIN_VALUE;
+      else
+        chariot->speed = +MOTOR_MIN_VALUE;
+    }
+    else if (position == 5)
+    {
+      if (digitalRead(chariot->sensor_position_array[position - 1]))
+        chariot->speed = MOTOR_MIN_VALUE;
+      else
+        chariot->speed = -MOTOR_MIN_VALUE;
+    }
+    else
+    {
+      if (digitalRead(chariot->sensor_position_array[position - 1]))
+        chariot->speed = MOTOR_MIN_VALUE;
+      else
+        chariot->speed = -MOTOR_MIN_VALUE;
+    }
+    chariot->stop();
     chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
@@ -235,36 +265,17 @@ int fdc(chariot_t *chariot)
 
 void chariot_center(chariot_t *chariot)
 {
-  char position = GAME_POSITION_CENTER;
-  chariot->move_position(chariot, position);
 
-  PRINT("Charriot : SLOW SPEED TO REACH CENTER");
-  char sign = sign(chariot->speed);
+  chariot->move_position(chariot, GAME_POSITION_CENTER - 1);
+  chariot->move_position(chariot, GAME_POSITION_CENTER);
 
-  switch (chariot->way)
-  {
-  case WAY_RIGHT:
-    position++;
-    break;
+  chariot->speed = MOTOR_MIN_VALUE
 
-  case WAY_LEFT:
-    position++;
-    break;
-  }
-
-  chariot->speed = MOTOR_CENTER_SPEED_VALUE * sign;
-  while (chariot->position != position) /// continue mouvement
+      while (!digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER1]) && !digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER])) /// continue mouvement
   {
     chariot->move(chariot);
     delay(GAME_DELAY_CHECK);
   }
-
-  PRINT("Charriot : WAIT SINGLE BUTTON");
-  while (chariot->multiple_position)
-  {
-    chariot->move(chariot);
-    delay(GAME_DELAY_CHECK);
-  };
 
   PRINT("Charriot : STOPING MOUVEMENT");
   chariot->stop(chariot);

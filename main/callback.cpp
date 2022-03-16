@@ -8,7 +8,9 @@ void on_game_stop_receive(game_t *game,int value)
     if (value == STATUS_OK)
     {
         PRINT("Callback : stop");
-        game->state = GAME_STATE_END;
+        game->communication->send_command(COMMANDE_STOP_GAME,STATUS_OK);
+        if (game->state == GAME_STATE_RUN)
+            game->state = GAME_STATE_END;
     }
 }
 
@@ -30,3 +32,14 @@ void on_position_receive(game_t *game,int value)
 
     }
 }
+
+void on_start_receive(game_t *game,int value)
+{
+    if (value == STATUS_OK)
+    {
+        if(game->state == GAME_STATE_IDDLE)
+            game->state = GAME_STATE_RUN;
+    }
+}
+
+
