@@ -23,8 +23,8 @@ typedef enum  {
 
 typedef enum 
 {
-  STATUS_NONE,
   STATUS_ERROR,
+  STATUS_NONE,
   STATUS_SERIAL_CONNECTED,
   STATUS_OK,
   STATUS_KO,
@@ -36,6 +36,7 @@ static char communication_receive_buffer[BUFFERSIZE];
 typedef struct communication
 {
   char *buffer;
+  int index;
   void (*init)();
   void (*check_message)(struct communication *communication);
   void (*send_command)(command_t command,status_t status);

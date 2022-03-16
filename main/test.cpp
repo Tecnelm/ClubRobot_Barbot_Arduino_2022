@@ -4,17 +4,19 @@
 
 void test_init()
 {
-    #ifdef DEBUG_STR
-        Serial.begin(BAUDRATES);
-        Serial.setTimeout(TIMEOUT_SERIAL);
-        while(!Serial){
-            ;
-        }
-        PRINT("SERIAL OK");
-    #endif
+//    #ifdef DEBUG_STR
+//        Serial.begin(BAUDRATES);
+//        Serial.setTimeout(TIMEOUT_SERIAL);
+//        while(!Serial){
+//            ;
+//        }
+//        PRINT("SERIAL OK");
+//    #endif
 }
 void test_loop()
 {
+    //test_electrovalves(&electrovalves);
+    //test_callback(&communication);
     //test_electrovalves(&electrovalves);
    // test_tank(&tank);
    test_charriot(&chariot);
@@ -125,5 +127,26 @@ void test_electrovalves(electrovalve_array_t *electrovalves )
   PRINT("ELECTROVALVE END TEST");
 
 }
+
+void test_callback(communication_t *communication)
+{
+  communication->init();
+  PRINT("COMMUNICATION TEST START");
+
+  
+  communication->send_command(COMMANDE_START_GAME,STATUS_OK);
+
+  communication->send_command(COMMANDE_RESPONSE,STATUS_ERROR);
+  communication->send_command(COMMANDE_SEND_POSITION,STATUS_NONE);
+  communication->send_command(COMMANDE_START_GAME,STATUS_OK);
+  communication->send_command(COMMANDE_STOP_GAME,STATUS_ERROR);
+  communication->send_command(COMMANDE_STATE_GLASS,STATUS_KO);
+
+  while (1)
+  {
+      communication->check_message(communication);
+  }
+}
+
 
 #endif
