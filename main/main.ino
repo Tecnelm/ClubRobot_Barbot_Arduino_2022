@@ -26,10 +26,10 @@ void loop() {
         game.run(&game);
       break;
       case GAME_STATE_END:
-        game.end(&game);
+        //game.end(&game);
       break;
       case GAME_STATE_RESET:
-        game.reset(&game);
+        //game.reset(&game);
       break;
     }
     game->communication->check_message(game->communication);

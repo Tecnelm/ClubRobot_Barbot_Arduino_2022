@@ -43,7 +43,7 @@ typedef struct game {
   void (*run)(struct game *game);
   void (*iddle)(struct game *game);
   void (*reset)(struct game *game);
-  void (*end)(struct game *game);
+  void (*end)(struct game *game,int value);
 
 
 } game_t;

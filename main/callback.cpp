@@ -5,13 +5,14 @@
 
 void on_game_stop_receive(game_t *game,int value)
 {
-    if (value == STATUS_OK)
-    {
+
         PRINT("Callback : stop");
-        game->communication->send_command(COMMANDE_STOP_GAME,STATUS_OK);
+        game->communication->send_command(COMMANDE_STOP_GAME,STATUS_KO);
         if (game->state == GAME_STATE_RUN)
+        {
             game->state = GAME_STATE_END;
-    }
+            game->end(game,value);
+        }
 }
 
 

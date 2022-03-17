@@ -63,7 +63,7 @@
 #define PIN_SERVO 10
 #define SERVO_ANGLE_MIN 20
 #define SERVO_ANGLE_MAX 58
-#define SERVO_DELAY_MS 7
+#define SERVO_DELAY_MS 1
 
 
 
@@ -82,7 +82,7 @@
 // #define DELAY_CHECK_MOVE_POSITION 200
 
 
-#define POUR_TIME_MS 5000 
+#define POUR_TIME_MS 1000 
 ///COMMUNICATION
 #define BAUDRATES 9600
 #define BUFFERSIZE 255
