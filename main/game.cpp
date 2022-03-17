@@ -1,7 +1,9 @@
 #include "game.hpp"
 #include "Arduino.h"
+#include <Servo.h>
 
 int repour = 0;
+Servo servo_chariot;
 void game_init(game_t *game)
 {
     for (int i = 0; i < BUTTON_SIZE; i++)
@@ -9,6 +11,8 @@ void game_init(game_t *game)
         pinMode(game->button[i], INPUT_PULLUP);
     }
 
+    servo_chariot.attach(PIN_SERVO);
+    servo_chariot.write(SERVO_ANGLE_MIN);
     game->communication->init();
     game->chariot->init(game->chariot);
     game->electrovalve->init(game->electrovalve);
@@ -25,14 +29,17 @@ void game_run(game_t *game)
         if (!digitalRead(game->button[1]) && !digitalRead(game->chariot->sensor_FDC[1]))
         {
             analogWrite(PIN_EN_MOTOR, 255);
-            digitalWrite(PIN_1_MOTOR, HIGH);
-            digitalWrite(PIN_2_MOTOR, LOW);
+            digitalWrite(PIN_1_MOTOR, LOW);
+            digitalWrite(PIN_2_MOTOR, HIGH);
+            game->chariot->way = WAY_LEFT;
         }
         else if (!digitalRead(game->button[0]) && !digitalRead(game->chariot->sensor_FDC[0]))
         {
             analogWrite(PIN_EN_MOTOR, 255);
-            digitalWrite(PIN_1_MOTOR, LOW);
-            digitalWrite(PIN_2_MOTOR, HIGH);
+            digitalWrite(PIN_1_MOTOR, HIGH);
+            digitalWrite(PIN_2_MOTOR, LOW);
+            game->chariot->way = WAY_RIGHT;
+
         }
         else
         {
@@ -42,18 +49,22 @@ void game_run(game_t *game)
 }
 void game_iddle(game_t *game)
 {
-    if (millis() - game->lastcheck > GAME_DELAY_CHECK)
+    if (millis() - game->lastcheck > GAME_DELAY_CHECK +1000)
     {
         game->lastcheck = millis();
 
-        if (analogRead(game->sharp_sensor) > THRESHOLD_GLASS_PRESENT)
+        if (analogRead(game->sharp_sensor) <THRESHOLD_GLASS_PRESENT)
         {
+          
             if (game->state_glass == SATE_GLASS_ABSENT)
             {
+              
                 game->communication->send_command(COMMANDE_STATE_GLASS, STATUS_OK);
                 game->state_glass = SATE_GLASS_PRESENT;
             }
-            if (!digitalRead(game->button[0] && !digitalRead(game->button[1])))
+            char button = !digitalRead(game->button[0]) && !digitalRead(game->button[1]);
+            PRINT(String(button,DEC));
+            if (button)
             {
                 game->communication->send_command(COMMANDE_START_GAME, STATUS_OK);
             }
@@ -67,27 +78,23 @@ void game_iddle(game_t *game)
             }
         }
     }
+
 }
 void game_reset(game_t *game)
 {
-    game->chariot->speed = -GAME_RESET_SPEED;
-    game->chariot->move(game->chariot);
-
-    while (digitalRead(!game->chariot->sensor_position_array[0]))
-    {
-        game->chariot->move(game->chariot);
-        delay(GAME_DELAY_CHECK);
-    }
-
-    game->chariot->speed = 0;
-    game->chariot->move(game->chariot);
-    game->tank->refill_tank(game->tank);
 }
 void game_end(game_t *game,int value)
 {
+    game->chariot->check(game->chariot);
     game->chariot->center(game->chariot);
-    game->electrovalve->openTime(game->electrovalve->array,value);
-    game->chariot->pour(game->chariot);
+    Serial.println("ERROR");
+    servo_chariot.write(SERVO_ANGLE_MAX);
+    int currentTime = millis();
+    game->electrovalve->open(game->electrovalve->array);
+    delay(value);
+    game->electrovalve->close(game->electrovalve->array);
+    servo_chariot.write(SERVO_ANGLE_MIN);
+    delay(100);
     game->state = GAME_STATE_IDDLE;
 }
 

@@ -1,8 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define DEBUG
-#define DEBUG_STR
+// #define DEBUG
+//#define DEBUG_STR
 
 
 #ifdef DEBUG_STR
@@ -17,7 +17,7 @@
 #define BUTTON_SIZE 2
 
 #define PIN_SENSOR_SHARP A0
-#define THRESHOLD_GLASS_PRESENT 270
+#define THRESHOLD_GLASS_PRESENT 350
 
 #define DIVIDE_SPEED 0.4
 #define GAME_DELAY_CHECK 10
@@ -45,11 +45,13 @@
 #define PIN_1_MOTOR 12 //IN4
 #define PIN_EN_MOTOR 13
 
+#define MAX_TIME_PUMP 3500
+
 
 
 #define MOTOR_SPEED_MAX_TIME_MS 50
-#define MOTOR_MAX_VALUE 240
-#define MOTOR_MIN_VALUE 190
+#define MOTOR_MAX_VALUE 255
+#define MOTOR_MIN_VALUE 255
 
 //#define MOTOR_SLICE_VALUE  (((MOTOR_MAX_VALUE - MOTOR_MIN_VALUE)*GAME_DELAY_CHECK)/MOTOR_SPEED_MAX_TIME_MS)
 #define MOTOR_SLICE_VALUE  10
@@ -58,11 +60,11 @@
 #define MOTOR_MOVE_POSITION_MULTIPLE 10
 
 //#define MOTOR_CENTER_SPEED_VALUE ((MOTOR_SLICE_VALUE*MOTOR_MOVE_POSITION_MULTIPLE)) /// must be higher than a step 
-#define MOTOR_CENTER_SPEED_VALUE 160 /// must be higher than a step 
+#define MOTOR_CENTER_SPEED_VALUE 190 /// must be higher than a step 
 
 #define PIN_SERVO 10
-#define SERVO_ANGLE_MIN 20
-#define SERVO_ANGLE_MAX 58
+#define SERVO_ANGLE_MIN 21
+#define SERVO_ANGLE_MAX 55
 #define SERVO_DELAY_MS 1
 
 

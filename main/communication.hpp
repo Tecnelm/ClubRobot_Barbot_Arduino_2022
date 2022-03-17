@@ -40,7 +40,7 @@ typedef struct communication
   void (*init)();
   void (*check_message)(struct communication *communication);
   void (*send_command)(command_t command,status_t status);
-  void (*send_command_str)(String str);
+  void (*send_command_str)(command_t command,int status);
   
 
   

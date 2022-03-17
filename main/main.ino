@@ -4,11 +4,9 @@
 
 extern game_t game;
 void setup() {
-  #ifdef DEBUG
-    test_init();
-  #else
+
     game.init(&game);
-  #endif
+ 
 
 }
 
@@ -32,7 +30,7 @@ void loop() {
         //game.reset(&game);
       break;
     }
-    game->communication->check_message(game->communication);
+    game.communication->check_message(game.communication);
 
   #endif
 }

@@ -66,11 +66,11 @@ void communication_send_command(command_t command,status_t status)
     Serial.print(create_commande(command,status));
   }
 }
-void communication_send_command_str(String str)
+void communication_send_command_response(command_t command,int value)
 {
   if(Serial)
   {
-    Serial.print(create_commande(COMMANDE_DEBUG_STR,str));
+    Serial.print(create_commande(command,value));
   }
 }
 communication_t communication={
@@ -79,5 +79,5 @@ communication_t communication={
   .init = init_serial,
   .check_message=check_serial_message,
   .send_command = communication_send_command,
-  .send_command_str =  communication_send_command_str
+  .send_command_str =  communication_send_command_response
 };

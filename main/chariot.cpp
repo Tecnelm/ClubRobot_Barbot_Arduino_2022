@@ -4,11 +4,9 @@
 
 #define sign(value) (value < 0 ? -1 : 1)
 
-Servo servo_chariot;
 
 void init_chariot(chariot_t *chariot)
 {
-  servo_chariot.attach(PIN_SERVO);
   pinMode(PIN_1_MOTOR, OUTPUT);
   pinMode(PIN_2_MOTOR, OUTPUT);
   pinMode(PIN_EN_MOTOR, OUTPUT);
@@ -19,7 +17,6 @@ void init_chariot(chariot_t *chariot)
   pinMode(chariot->sensor_FDC[0], INPUT_PULLUP);
   pinMode(chariot->sensor_FDC[1], INPUT_PULLUP);
 
-  servo_chariot.write(SERVO_ANGLE_MIN);
 
   chariot->way = WAY_LEFT;
   chariot->check(chariot);
@@ -151,18 +148,19 @@ void move_position(chariot_t *chariot, char position)
   
   if (chariot->position > position)
   {
-    PRINT("CHARRIOT : GO RIGHT");
-    chariot->speed = -MOTOR_MIN_VALUE;
+    digitalWrite(PIN_2_MOTOR, LOW);
+  digitalWrite(PIN_1_MOTOR, HIGH);  
+  analogWrite(PIN_EN_MOTOR,MOTOR_CENTER_SPEED_VALUE );
   }
   else if (chariot->position < position)
   {
-    PRINT("CHARRIOT : GO LEFT");
-    chariot->speed = MOTOR_MIN_VALUE;
+    digitalWrite(PIN_2_MOTOR, HIGH);
+    digitalWrite(PIN_1_MOTOR, LOW);  
+    analogWrite(PIN_EN_MOTOR,MOTOR_CENTER_SPEED_VALUE );
   }
 
   while (!digitalRead(chariot->sensor_position_array[position])) /// continue mouvement
   {
-    chariot->move(chariot);
     delay(1);
   }
   chariot->stop(chariot);
@@ -206,7 +204,6 @@ void chariot_pour(chariot_t *chariot)
   PRINT("Charriot : Test POUR;DOWN");
   for (int i = SERVO_ANGLE_MIN; i <= SERVO_ANGLE_MAX; i++)
   {
-    servo_chariot.write(i);
     delay(SERVO_DELAY_MS);
   }
   PRINT("Charriot : Test POUR ; wait");
@@ -214,7 +211,6 @@ void chariot_pour(chariot_t *chariot)
   PRINT("Charriot : Test POUR ; UP");
   for (int i = SERVO_ANGLE_MAX; i >= SERVO_ANGLE_MIN; i--)
   {
-    servo_chariot.write(i);
     delay(SERVO_DELAY_MS);
   }
   PRINT("Charriot : Test POUR;END");
@@ -261,10 +257,9 @@ void chariot_center(chariot_t *chariot)
   analogWrite(PIN_EN_MOTOR,MOTOR_CENTER_SPEED_VALUE );
   while (!digitalRead(chariot->sensor_position_array[GAME_POSITION_CENTER]));
 
+  chariot->stop(chariot);
   chariot->check(chariot);
   PRINT("Charriot : STOPING MOUVEMENT");
-  chariot->stop(chariot);
-
 }
 
 

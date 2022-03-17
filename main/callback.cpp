@@ -6,13 +6,10 @@
 void on_game_stop_receive(game_t *game,int value)
 {
 
-        PRINT("Callback : stop");
-        game->communication->send_command(COMMANDE_STOP_GAME,STATUS_KO);
-        if (game->state == GAME_STATE_RUN)
-        {
-            game->state = GAME_STATE_END;
-            game->end(game,value);
-        }
+  PRINT("Callback : stop");
+  game->communication->send_command(COMMANDE_STOP_GAME,STATUS_OK);
+  if (game->state == GAME_STATE_RUN)
+      game->end(game,value<MAX_TIME_PUMP ? value:MAX_TIME_PUMP);
 }
 
 
@@ -26,7 +23,6 @@ void on_position_receive(game_t *game,int value)
         {
             PRINT("Callback : position : OK");
             game->communication->send_command(COMMANDE_SEND_POSITION,STATUS_OK);
-            game->electrovalve->openTime(&(game->electrovalve->array[value]),TIME_ELECTROVALVE_OPEN_MS);
         }
         else
             game->communication->send_command(COMMANDE_SEND_POSITION,STATUS_KO);
@@ -42,5 +38,3 @@ void on_start_receive(game_t *game,int value)
             game->state = GAME_STATE_RUN;
     }
 }
-
-
