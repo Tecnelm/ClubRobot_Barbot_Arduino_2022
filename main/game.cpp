@@ -2,7 +2,18 @@
 #include "Arduino.h"
 #include <Servo.h>
 
-int repour = 0;
+int index = 0;
+int moy = 0;
+int sharpVal[10] = {1000,
+1000,
+1000,
+1000,
+1000,
+1000,
+1000,
+1000,
+1000,
+1000};
 Servo servo_chariot;
 void game_init(game_t *game)
 {
@@ -49,11 +60,17 @@ void game_run(game_t *game)
 }
 void game_iddle(game_t *game)
 {
-    if (millis() - game->lastcheck > GAME_DELAY_CHECK +1000)
+    if (millis() - game->lastcheck > GAME_DELAY_CHECK)
     {
-        game->lastcheck = millis();
-
-        if (analogRead(game->sharp_sensor) <THRESHOLD_GLASS_PRESENT)
+        moy = 0;
+        for(int i = 0 ; i<10; i++)
+        {
+          moy += sharpVal[i]; 
+        }
+        moy/=10;
+        sharpVal[index++] = analogRead(game->sharp_sensor);
+        index%=10;
+        if (moy >THRESHOLD_GLASS_PRESENT)
         {
           
             if (game->state_glass == SATE_GLASS_ABSENT)
