@@ -4,16 +4,7 @@
 
 int index = 0;
 int moy = 0;
-int sharpVal[10] = {1000,
-1000,
-1000,
-1000,
-1000,
-1000,
-1000,
-1000,
-1000,
-1000};
+int sharpVal[10] = {0};
 Servo servo_chariot;
 void game_init(game_t *game)
 {
