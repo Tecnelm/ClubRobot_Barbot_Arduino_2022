@@ -61,6 +61,7 @@ void game_iddle(game_t *game)
         moy/=10;
         sharpVal[index++] = analogRead(game->sharp_sensor);
         index%=10;
+        
         if (moy >THRESHOLD_GLASS_PRESENT)
         {
           
